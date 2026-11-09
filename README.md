@@ -1,6 +1,6 @@
 # Gliwice switch
 
-Contemporary Gliwice in pixel art: the Rynek with its green-roofed Ratusz and Neptune fountain, the renovated theatre on Nowy Świat, and Beer Brothers at Górnych Wałów 30. Café terraces, pedestrians, a city bike and warm evening lights replace the former industrial scene. No build step or dependencies.
+Contemporary Gliwice in pixel art: the Rynek with its green-roofed Ratusz and Neptune fountain, the renovated theatre on Nowy Świat, and Beer Brothers at Górnych Wałów 30. Café terraces with guests, pedestrians, the Rynek's pigeons, young plane trees, a yellow Metrorower and warm evening lights replace the former industrial scene. No build step or dependencies.
 
 The landmarks form a compressed city panorama, rather than a literal street view.
 
@@ -42,7 +42,7 @@ The engine is derived from `tokyo-switch.js`; the original idea is “住人の�
 node test-scene.cjs
 ```
 
-Checks rendering through day, dusk, night and dawn, Beer Brothers lighting, the cat interaction and reduced motion using the real scene engine.
+Checks rendering through day, dusk, night and dawn, Beer Brothers lighting, the cat and pigeon interaction and reduced motion using the real scene engine.
 
 ## Landmark references
 
@@ -50,5 +50,10 @@ Checks rendering through day, dusk, night and dawn, Beer Brothers lighting, the 
 - [Beer Brothers — venue-maintained profile](https://beer-brothers.ontap.pl/).
 - [Gliwice landmarks and theatre façade](https://gliwice.eu/content/ciekawe-miejsca).
 - [Theatre address on Nowy Świat 55–57](https://teatr.gliwice.pl/adresy-i-telefony/). The scene uses the familiar Teatr Muzyczny name requested for this illustration.
+- [London planes planted on the Rynek](https://gliwice.eu/aktualnosci/miasto/rynek-wypieknieje-bedzie-wiecej-zieleni) and [the planting in 2022](https://gliwice.eu/aktualnosci/miasto/zielonegliwice-sadza-drzewa-na-rynku).
+- [Metrorower in Gliwice](https://gliwice.eu/aktualnosci/ekologia/metrorower-wystartowal), the yellow-and-black metropolitan hire bike.
+- [Pigeons on the Rynek and the Neptune fountain](https://www.24gliwice.pl/wiadomosci/golebie-brudza-i-niewiele-mozna-z-tym-zrobic-wg-rozporzadzenia-ministra-srodowiska-sa-pod-ochrona/), local press photographs.
+
+[RESEARCH.md](RESEARCH.md) lists the photographs opened for these additions and what could not be verified.
 
 The MP4 is a seven-second recording of the complete browser-rendered switch at 800 × 500 and 60 fps, including the moving glass lens.

@@ -26,7 +26,8 @@
       TEN_P: '#e1b6a6', TEN_P_D: '#c1958a', TEN_T: '#f8efdf',
       TILE_R: '#ab6750', TILE_D: '#774936',
       TIMBER: '#826044', TIMBER_D: '#5e4939', TIMBER_L: '#a68358',
-      TREE: '#56835b', TREE_D: '#375a46', TREE_L: '#82a16b',
+      TREE: '#6c9a50', TREE_D: '#47723f', TREE_L: '#a3bf66', BARK: '#857f66', BARK_L: '#b7ae8c',
+      PIGEON: '#737c8c', PIGEON_D: '#444b5a',
       FGL: '#62858b', FGL_H: '#b0d0ce', STONE: '#c5c1af', STONE_D: '#999e93',
       NEPT: '#83a694', NEPT_D: '#557d70', WATER: '#9bbac0',
       BRONZE: '#5b685b', LEAF: '#728f57', PLANTER: '#737c75',
@@ -120,17 +121,17 @@
     w.beacons.push([cx, 6], [cx - 3, 44], [cx + 3, 44]);
   };
 
-  const tree = (w, cx, cy, rw, rh, r) => {
-    for (let y = -rh; y <= rh; y++) {
-      for (let x = -rw; x <= rw; x++) {
-        const d = (x * x) / (rw * rw) + (y * y) / (rh * rh);
-        if (d > 1 + (r() - 0.5) * 0.3) continue;
+  // A young London plane as planted on the Rynek in 2022: a slim mottled stem
+  // with a tall, upright, open crown that the façades show through.
+  const plane = (w, cx, r) => {
+    for (let y = 89; y <= 120; y++) w.px(cx, y, (y * 3 + cx) % 5 < 2 ? M.BARK_L : M.BARK);
+    for (let y = -11; y <= 9; y++) {
+      const half = Math.round(6.4 * Math.sqrt(1 - (y + 1) * (y + 1) / 112) * (y < -3 ? 0.5 + (y + 11) * 0.06 : 1));
+      for (let x = -half; x <= half; x++) {
         const v = r();
-        let m = M.TREE;
-        if (y > rh * 0.2 || x > rw * 0.4) m = v < 0.7 ? M.TREE_D : M.TREE;
-        else if (y < -rh * 0.25 && x < rw * 0.2) m = v < 0.55 ? M.TREE_L : M.TREE;
-        else if (v < 0.3) m = M.TREE_D;
-        w.px(cx + x, cy + y, m);
+        // Leaves sit in loose tiers and thin out toward the edge
+        if (v < 0.14 + 0.32 * Math.abs(x) / (half + 1) || ((y + 12) % 4 === 0 && x && v < 0.62)) continue;
+        w.px(cx + x, 97 + y, x + y < -5 ? M.TREE_L : x > 2 || y > 5 ? M.TREE_D : v > 0.8 ? M.TREE_L : M.TREE);
       }
     }
   };
@@ -202,29 +203,108 @@
   };
 
   const drawSky = (w, dt, hour) => {
-    const h = hour;
-    if (h < 18.4) {
-      const t = clamp((h - 12) / (18.1 - 12));
-      const low = smooth(15.6, 17.4, h);
-      w.sun(mix(118, 8, t), mix(16, 58, t * t * t), low > 0.3 ? 6 : 5, low);
-    } else if (h > 29.2) {
-      const t = clamp((h - 29.2) / (36 - 29.2));
-      const low = 1 - smooth(30.2, 31.8, h);
-      w.sun(mix(304, 118, t), mix(82, 16, Math.sqrt(t)), low > 0.3 ? 6 : 5, low);
+    // The sun comes up through the theatre's globe, climbs behind the Radiostacja and the
+    // Ratusz spire to stand over the eastern roofs at noon, then sinks behind the pub's block.
+    if (hour < 18.5) {
+      const t = clamp((hour - 12) / 6.2);
+      const low = smooth(15.4, 17.2, hour);
+      w.sun(mix(210, 308, t), mix(16, 72, Math.pow(t, 2.4)), low > 0.3 ? 6 : 5, low);
+    } else if (hour > 29.4) {
+      const t = clamp((hour - 29.4) / 6.6);
+      const low = 1 - smooth(30.6, 32.2, hour);
+      w.sun(mix(14, 210, t), mix(72, 16, Math.sqrt(t)), low > 0.3 ? 6 : 5, low);
     }
-    if (h > 18.6 && h < 29.4) w.moon(mix(96, 142, (h - 18.6) / 10.8), mix(30, 18, Math.sin(((h - 18.6) / 10.8) * Math.PI)));
-    for (const c of w.strata) {
+    // The moon rises over the theatre and slips behind the tower's lattice after midnight.
+    if (hour > 18.8 && hour < 29.6) {
+      const t = (hour - 18.8) / 10.8;
+      w.moon(mix(40, 128, t), 44 - 22 * Math.sin(t * Math.PI));
+    }
+    w.drawStars();
+    // Fair-weather cumulus: flat bases and a few squashed domes each.
+    for (const c of w.cumulus) {
       c.x += c.v * dt;
-      if (c.x > 370) c.x = -c.w - 40;
+      if (c.x > 372) c.x = -c.w - 44;
       const cx = Math.round(c.x);
       for (let i = 0; i < c.w; i++) {
-        const edge = Math.min(i, c.w - i);
-        const thick = Math.round(Math.min(edge * 0.12, 1.5) + Math.sin(i * 0.17 + c.w) * 0.8 + 0.5);
-        for (let j = -thick; j <= 0; j++) {
-          if ((i + j * 3 + c.y) % 5 === 0 && edge < 18) continue;
-          w.pxSky(cx + i, c.y + j, j === 0 ? M.CLOUD_SH : M.CLOUD);
+        let top = 0;
+        for (const [at, r] of c.lobes) top = Math.max(top, r * r - (i - at) * (i - at));
+        const h = Math.round(Math.sqrt(top) * 0.8);
+        for (let j = 0; j <= h; j++) w.pxSky(cx + i, c.y - j, j === 0 || (j === 1 && h > 4) ? M.CLOUD_SH : M.CLOUD);
+      }
+    }
+  };
+
+  // Rynek pigeons peck in front of the Ratusz, flutter off in a loop now and then,
+  // all go up together when startled and roost one by one at dusk.
+  const drawPigeons = (w, dt, hour) => {
+    const map = { B: M.PIGEON, H: M.PIGEON_D };
+    for (const b of w.pigeons) {
+      const out = hour < 19 + b.p * 0.1 || hour > 30.4 - b.p * 0.1;
+      if (w.flush && out && b.u >= 1) b.u = 0;
+      if (b.u < 1) {
+        b.u = Math.min(1, b.u + dt / b.dur);
+        const x = Math.round(b.x + b.dx * (1 - Math.cos(b.u * Math.PI * 2)) / 2);
+        const y = Math.round(b.hy - b.h * Math.sin(Math.PI * Math.pow(b.u, 0.6)));
+        const wing = Math.sin(w.t * 24 + b.p) > 0 ? -1 : 1;
+        w.rect(x, y, 2, 1, M.PIGEON);
+        w.px(x - 1, y + wing, M.PIGEON_D);
+        w.px(x + 2, y + wing, M.PIGEON_D);
+        continue;
+      }
+      if (!out) continue;
+      b.wait -= dt;
+      if (b.wait < 0) {
+        b.wait = 5 + w.rand() * 20;
+        if (w.rand() < 0.4) b.u = 0;
+        else {
+          b.x = b.hx + Math.round(w.rand() * 4 - 2);
+          b.face = !b.face;
         }
       }
+      w.sprite(Math.sin(w.t * 4 + b.p) > 0.4 ? ['.B.', 'BBH'] : ['..H', 'BBB'], map, b.x, b.hy - 1, b.face);
+    }
+    w.flush = false;
+  };
+
+  // Guests at the tables: the cafés fill by day, the pub's courtyard stays busy into the night.
+  const drawGuests = (w, hour) => {
+    for (const [x, y, right, top, from, to] of w.guests) {
+      if (from < to ? hour < from || hour >= to : hour < from && hour >= to) continue;
+      w.rect(x, y - 6, 2, 1, M.HAIR);
+      w.rect(x, y - 5, 2, 1, M.SKIN);
+      w.rect(x, y - 4, 2, 4, top);
+      w.rect(x, y + 1, 2, 1, M.SUIT);
+      // Now and then a cup goes up
+      if (Math.sin(w.t * 0.9 + x) > 0.8) w.px(right ? x - 1 : x + 2, y - 4, M.TRIM);
+    }
+  };
+
+  // A yellow-and-black Metrorower, the metropolitan hire bike: step-through frame, front
+  // basket and the yellow panel over the back wheel. It rides right to left.
+  const drawMetrorower = (w) => {
+    const bx = 370 - Math.round((w.t * 15 + 150) % 450), by = 142;
+    for (const cx of [bx, bx + 12]) {
+      for (let a = 0; a < Math.PI * 2; a += .3) w.px(cx + Math.round(Math.cos(a) * 3), by + Math.round(Math.sin(a) * 3), M.CAR_DK);
+      w.px(cx, by, M.STEEL_LT);
+    }
+    for (const [x0, y0, x1, y1] of [[0, -1, 2, -6], [2, -5, 6, -1], [6, -1, 8, -6], [6, 0, 11, 0]]) {
+      line(bx + x0, by + y0, bx + x1, by + y1, (x, y) => w.px(x, y, M.BOARD_Y));
+    }
+    w.rect(bx - 2, by - 9, 3, 3, M.BOARD_Y);
+    w.rect(bx + 9, by - 5, 5, 2, M.BOARD_Y);
+    w.rect(bx + 2, by - 7, 2, 1, M.CAR_DK);
+    w.rect(bx + 7, by - 7, 3, 1, M.CAR_DK);
+    // Upright rider, as on any town bike
+    w.rect(bx + 7, by - 12, 3, 5, M.BOARD_B);
+    w.rect(bx + 7, by - 15, 3, 3, M.SKIN);
+    w.rect(bx + 7, by - 15, 3, 1, M.HAIR);
+    w.px(bx + 9, by - 14, M.HAIR);
+    line(bx + 6, by - 10, bx + 4, by - 8, (x, y) => w.px(x, y, M.BOARD_B));
+    const step = Math.floor(w.t * 4) % 2;
+    line(bx + 7, by - 6, bx + 5 + step * 2, by - 1, (x, y) => w.px(x, y, M.SUIT));
+    if (w.dark > 0.3) {
+      w.pxLight(bx + 1, by - 5, N.HEAD);
+      w.pxLight(bx + 13, by - 4, N.TAIL);
     }
   };
 
@@ -419,8 +499,7 @@
     terrace(w, 260, 122, M.COPPER);
     terrace(w, 291, 122, M.TRIM);
     for (const x of [86, 233, 342]) {
-      w.rect(x + 3, 104, 1, 17, M.TIMBER_D);
-      tree(w, x + 3, 99, 8, 9, rng(x));
+      plane(w, x + 3, rng(x));
       w.rect(x - 2, 118, 11, 5, M.PLANTER);
       w.rect(x - 2, 118, 11, 1, M.LEAF);
     }
@@ -432,14 +511,30 @@
     // Warm festoon lights over the pub's courtyard.
     w.wire(247, 113, 322, 113, 3, M.COPPER_D);
     for (let x = 249; x < 321; x += 6) w.tube(x, w.wireY(247, 113, 322, 113, 3, x) + 1, M.TRIM, N.PUB, w.pubG);
-    w.strata = [{ x: -30, y: 14, w: 58, v: .6 }, { x: 185, y: 9, w: 67, v: .4 }];
+    w.cumulus = [{ x: -18, y: 32, w: 30, v: .8, lobes: [[6, 6], [14, 10], [23, 7]] },
+      { x: 116, y: 13, w: 19, v: .5, lobes: [[5, 5], [12, 7]] },
+      { x: 246, y: 38, w: 37, v: .65, lobes: [[7, 6], [16, 9], [25, 11], [32, 5]] }];
+    const sr = rng(1257);
+    w.stars = Array.from({ length: 24 }, () => [Math.floor(sr() * 290) + 14, Math.floor(sr() * 50) - 4, sr() * 6.28]);
     w.cat.x = 240; w.cat.y = 127;
     // Walk lanes stay in front of the terraces, planters and fountain, whose feet end at y 126.
-    for (const [x, y, dir, speed, style] of [[18, 130, 1, 5, 'coat'], [78, 133, -1, 6, 'shirt'],
-      [146, 131, 1, 4, 'coat'], [201, 134, -1, 5, 'shirt'], [278, 132, 1, 4, 'coat'], [310, 130, -1, 5, 'suit']]) {
-      w.peds.push({ x, y, dir, speed, style, phase: x % 3 });
+    for (const [x, y, dir, speed, style, nightOnly] of [[18, 130, 1, 5, 'coat'], [78, 133, -1, 6, 'linen'],
+      [146, 131, 1, 4, 'rust'], [201, 134, -1, 5, 'shirt'], [278, 132, 1, 4, 'coat'], [310, 130, -1, 5, 'suit'],
+      [112, 132, -1, 3, 'rust', true], [236, 133, 1, 3.5, 'linen', true], [330, 131, -1, 4.5, 'teal', true]]) {
+      w.peds.push({ x, y, dir, speed, style, nightOnly, phase: x % 3 });
     }
     w.personStyles.coat = [M.COPPER_D, M.SUIT, M.HAIR];
+    w.personStyles.linen = [M.TEN_T, M.TIMBER_D, M.TIMBER];
+    w.personStyles.rust = [M.TILE_R, M.SUIT, M.HAIR];
+    w.personStyles.teal = [M.NEPT_D, M.STONE_D, M.TIMBER_D];
+    // The paving between the Ratusz steps, the terraces and the fountain is clear of every lane.
+    const pr = rng(1794);
+    w.pigeons = [[143, 118], [147, 116], [152, 119], [185, 117], [189, 119], [193, 116], [196, 118]].map(([hx, hy], i) => ({
+      hx, hy, x: hx, u: 1, dur: 2 + pr(), dx: (hx < 170 ? 1 : -1) * (8 + pr() * 13), h: 13 + pr() * 14, wait: 3 + pr() * 20, p: pr() * 6, face: i % 2 > 0,
+    }));
+    // x of the left pixel, table height, faces left, top, arrives, leaves
+    w.guests = [[100, 121, 0, M.TILE_R, 32.5, 21.5], [109, 121, 1, M.NEPT_D, 33.2, 20.6], [125, 122, 0, M.BOARD_B, 34, 22.3],
+      [261, 122, 0, M.TIMBER_L, 31.8, 25.2], [270, 122, 1, M.TEN_T, 17.2, 25.6], [292, 122, 0, M.COAT, 18, 25.9], [301, 122, 1, M.TILE_R, 18.4, 24.8]];
   };
 
   const draw = (w, dt, hour) => {
@@ -455,22 +550,12 @@
     line(cx, cy, cx + Math.round(Math.cos(minute) * 3), cy + Math.round(Math.sin(minute) * 3), (x, y) => w.px(x, y, M.COPPER_D));
     line(cx, cy, cx + Math.round(Math.cos(hand) * 2), cy + Math.round(Math.sin(hand) * 2), (x, y) => w.px(x, y, M.COPPER_D));
     drawFountainLive(w);
+    drawGuests(w, hour);
+    drawPigeons(w, dt, hour);
     // The cat dozes behind the walk lanes, so people pass in front of it.
     w.drawCat(dt, hour);
     w.drawPeople(dt, hour);
-    // A city bike crosses the foreground; the rider pedals instead of a vintage car parade.
-    const bx = Math.round((w.t * 12 + 35) % 420) - 50, by = 142;
-    for (const cx of [bx, bx + 12]) for (let a = 0; a < Math.PI * 2; a += .3) {
-      w.px(cx + Math.round(Math.cos(a) * 3), by + Math.round(Math.sin(a) * 3), M.COPPER_D);
-    }
-    for (const [x0, y0, x1, y1] of [[0, 0, 5, -5], [5, -5, 8, 0], [8, 0, 0, 0], [5, -5, 10, -5], [10, -5, 12, 0]]) {
-      line(bx + x0, by + y0, bx + x1, by + y1, (x, y) => w.px(x, y, M.TILE_R));
-    }
-    w.rect(bx + 5, by - 13, 3, 3, M.SKIN);
-    w.rect(bx + 4, by - 10, 4, 5, M.COPPER_D);
-    const step = Math.floor(w.t * 5) % 2;
-    line(bx + 5, by - 5, bx + 6 + step * 2, by - 1, (x, y) => w.px(x, y, M.SUIT));
-    line(bx + 7, by - 8, bx + 10, by - 6, (x, y) => w.px(x, y, M.SKIN));
+    drawMetrorower(w);
   };
 
   CitySwitch.define('gliwice-switch', {
@@ -481,6 +566,6 @@
     street: (M) => [M.PAVE, M.PAVE_D, M.STONE, M.STONE_D],
     weather: (h) => ({ wet: .32 * smooth(18.7, 20, h) * (1 - smooth(29, 31, h)) }),
     post: (w) => w.reflect(),
-    startle: (w) => { w.cat.puff = 1.4; },
+    startle: (w) => { w.cat.puff = 1.4; w.flush = true; },
   });
 })();

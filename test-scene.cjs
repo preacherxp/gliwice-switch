@@ -38,9 +38,18 @@ for (const hour of [12, 17, 18.5, 22, 26, 29, 31, 36]) {
 world.startle();
 world.tick(1 / 30, 18);
 assert.ok(world.cat.puff > 0, 'the cat still reacts to a quick drag');
+assert.ok(world.pigeons.every((bird) => bird.u < 1), 'the pigeons go up when startled');
+for (let frame = 0; frame < 120; frame++) world.tick(1 / 30, 18);
+assert.ok(world.pigeons.some((bird) => bird.u === 1), 'and settle again');
+world.startle();
+world.tick(1 / 30, 22);
+assert.ok(world.pigeons.every((bird) => bird.u === 1), 'roosting pigeons stay put at night');
 const frozenTime = world.t;
+const flights = world.pigeons.map((bird) => bird.u + bird.wait);
+world.tick(1 / 30, 14, { calm: true });
 world.tick(1 / 30, 22, { calm: true });
 assert.equal(world.t, frozenTime, 'reduced motion stops the scene animation');
+assert.deepEqual(world.pigeons.map((bird) => bird.u + bird.wait), flights, 'and the pigeons with it');
 assert.equal(world.levels[world.pubG], 1);
 
 // Optional raw frames let the same check produce a visual preview without browser dependencies.
