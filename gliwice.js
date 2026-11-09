@@ -329,7 +329,7 @@
       windowAt(w, x, 96, 6, 12, w.theatreG);
     }
     for (let x = -13; x < 78; x += 4) w.rect(x, 70, 2, 2, M.THEATRE_D);
-    w.hsign(-15, 72, 95, 7, 'TEATR MUZYCZNY', { n: N.LED_SOFT, g: w.theatreG, board: M.THEATRE, off: M.COPPER_D });
+    w.hsign(2, 72, 63, 7, 'TEATR MUZYCZNY', { n: N.LED_SOFT, g: w.theatreG, board: M.THEATRE, off: M.COPPER_D });
     const cx = 33, cy = 54, radius = 11;
     for (let a = 0; a < Math.PI * 2; a += .08) {
       w.px(cx + Math.round(Math.cos(a) * radius), cy + Math.round(Math.sin(a) * radius), M.COPPER_D);
@@ -350,13 +350,13 @@
   const drawBeerBrothers = (w) => {
     // A compact storefront and courtyard vignette of Górnych Wałów 30.
     w.rect(249, 91, 73, 23, M.COPPER_D);
-    w.hsign(250, 92, 71, 8, 'BEER BROTHERS', { n: N.PUB, g: w.pubG, board: M.COPPER_D, off: M.TRIM });
+    w.hsign(250, 92, 63, 8, 'BEER BROTHERS', { n: N.PUB, g: w.pubG, board: M.COPPER_D, off: M.TRIM });
     w.rect(251, 101, 25, 12, M.ROOM);
     w.lightRect(252, 102, 23, 10, N.BOTTLES, w.pubG);
     w.rect(280, 101, 15, 13, M.ROOM);
     w.lightRect(281, 102, 13, 11, N.WARM, w.pubG);
-    w.rect(299, 101, 21, 12, M.ROOM);
-    w.lightRect(300, 102, 19, 10, N.WARM_DIM, w.pubG);
+    w.rect(309, 101, 12, 12, M.ROOM);
+    w.lightRect(310, 102, 10, 10, N.WARM_DIM, w.pubG);
     w.rect(286, 101, 1, 13, M.COPPER_D);
     for (const y of [104, 109]) {
       for (let x = 253; x < 274; x += 3) {
@@ -365,14 +365,14 @@
       }
       w.rect(252, y + 1, 23, 1, M.TIMBER);
     }
-    // Tap handles and a street-number plaque keep it legible in the tiny scene.
-    for (const x of [303, 307, 311, 315]) {
+    // Tap handles and a street-number plaque by the door keep it legible in the tiny scene.
+    for (const x of [312, 316]) {
       w.rect(x, 103, 1, 4, M.STEEL_LT);
       w.px(x - 1, 104, M.STEEL_LT);
       w.px(x, 102, M.LABEL);
     }
-    w.rect(299, 109, 21, 2, M.TIMBER);
-    w.hsign(325, 99, 11, 8, '30', { n: N.LED_SOFT, g: w.pubG, board: M.THEATRE_L, off: M.COPPER_D });
+    w.rect(309, 109, 11, 2, M.TIMBER);
+    w.hsign(297, 102, 9, 7, '30', { n: N.LED_SOFT, g: w.pubG, board: M.THEATRE_L, off: M.COPPER_D });
   };
 
   const terrace = (w, x, y, umbrella) => {
@@ -399,7 +399,7 @@
     w.roadTop = 137;
     w.rainFloor = 149;
     w.pubG = w.addGroup(17, 26, 'room');
-    w.cafeG = w.addGroup(12, 24, 'room');
+    w.cafeG = w.addGroup(17, 24, 'room');
     w.theatreG = w.addGroup(17.7, 24, 'room');
     w.hallG = w.addGroup(18.1, 30, 'room');
     w.towerG = w.addGroup(18.3, 29.2, 'room');
@@ -434,8 +434,9 @@
     for (let x = 249; x < 321; x += 6) w.tube(x, w.wireY(247, 113, 322, 113, 3, x) + 1, M.TRIM, N.PUB, w.pubG);
     w.strata = [{ x: -30, y: 14, w: 58, v: .6 }, { x: 185, y: 9, w: 67, v: .4 }];
     w.cat.x = 240; w.cat.y = 127;
-    for (const [x, y, dir, speed, style] of [[18, 124, 1, 5, 'coat'], [78, 129, -1, 6, 'shirt'],
-      [146, 126, 1, 4, 'coat'], [201, 130, -1, 5, 'shirt'], [278, 128, 1, 4, 'coat'], [310, 123, -1, 5, 'suit']]) {
+    // Walk lanes stay in front of the terraces, planters and fountain, whose feet end at y 126.
+    for (const [x, y, dir, speed, style] of [[18, 130, 1, 5, 'coat'], [78, 133, -1, 6, 'shirt'],
+      [146, 131, 1, 4, 'coat'], [201, 134, -1, 5, 'shirt'], [278, 132, 1, 4, 'coat'], [310, 130, -1, 5, 'suit']]) {
       w.peds.push({ x, y, dir, speed, style, phase: x % 3 });
     }
     w.personStyles.coat = [M.COPPER_D, M.SUIT, M.HAIR];
@@ -454,8 +455,9 @@
     line(cx, cy, cx + Math.round(Math.cos(minute) * 3), cy + Math.round(Math.sin(minute) * 3), (x, y) => w.px(x, y, M.COPPER_D));
     line(cx, cy, cx + Math.round(Math.cos(hand) * 2), cy + Math.round(Math.sin(hand) * 2), (x, y) => w.px(x, y, M.COPPER_D));
     drawFountainLive(w);
-    w.drawPeople(dt, hour);
+    // The cat dozes behind the walk lanes, so people pass in front of it.
     w.drawCat(dt, hour);
+    w.drawPeople(dt, hour);
     // A city bike crosses the foreground; the rider pedals instead of a vintage car parade.
     const bx = Math.round((w.t * 12 + 35) % 420) - 50, by = 142;
     for (const cx of [bx, bx + 12]) for (let a = 0; a < Math.PI * 2; a += .3) {
