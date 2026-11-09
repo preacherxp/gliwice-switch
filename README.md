@@ -1,6 +1,8 @@
 # Gliwice switch
 
-An interactive pixel-art Gliwice day and night switch. No build step or dependencies.
+Contemporary Gliwice in pixel art: the Rynek with its green-roofed Ratusz and Neptune fountain, the renovated theatre on Nowy Świat, and Beer Brothers at Górnych Wałów 30. Café terraces, pedestrians, a city bike and warm evening lights replace the former industrial scene. No build step or dependencies.
+
+The landmarks form a compressed city panorama, rather than a literal street view.
 
 [Live demo](https://preacherxp.github.io/gliwice-switch/)
 
@@ -33,3 +35,18 @@ GitHub Pages serves the root of the `main` branch. Push changes to `main` to upd
 ## Attribution
 
 The engine is derived from `tokyo-switch.js`; the original idea is “住人のいるスイッチ” by @Lattice_Node ([original project](https://ludion.ai/p/toggle-daylight), MIT), as credited in the engine source.
+
+## Check the scene
+
+```sh
+node test-scene.cjs
+```
+
+Checks rendering through day, dusk, night and dawn, Beer Brothers lighting, the cat interaction and reduced motion using the real scene engine.
+
+## Landmark references
+
+- [Beer Brothers — official pub and shop website](https://beerbrothers.shop/), Górnych Wałów 30.
+- [Beer Brothers — venue-maintained profile](https://beer-brothers.ontap.pl/).
+- [Gliwice landmarks and theatre façade](https://gliwice.eu/content/ciekawe-miejsca).
+- [Theatre address on Nowy Świat 55–57](https://teatr.gliwice.pl/adresy-i-telefony/). The scene uses the familiar Teatr Muzyczny name requested for this illustration.

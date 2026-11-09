@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Gliwice switch</title>
-<meta name="description" content="An interactive pixel-art Gliwice day and night switch. Drag through the hours, tap to toggle, or use the keyboard.">
+<meta name="description" content="Contemporary Gliwice in pixel art: Rynek, the Ratusz, Teatr Muzyczny and Beer Brothers at Górnych Wałów 30. Drag from day to night.">
 <style>
   * { box-sizing: border-box; }
   html, body { margin: 0; }
@@ -27,7 +27,7 @@
     gap: 56px;
     overflow: hidden;
   }
-  .gliwice { --paper: #e9e1d2; --night: #0e0a08; --dusk-colour: #4a2a22; }
+  .gliwice { --paper: #e8e8df; --night: #101b26; --dusk-colour: #8c716b; }
 
   .switch { width: min(680px, calc(100vw - 96px)); display: block; }
   .read { display: flex; gap: 28px; align-items: baseline; justify-content: center; }
@@ -42,11 +42,11 @@
 </style>
 </head>
 <body>
-<section class="gliwice">
+<section class="gliwice" aria-label="Contemporary Gliwice: Rynek and Ratusz, Teatr Muzyczny, and Beer Brothers at Górnych Wałów 30">
   <gliwice-switch class="switch"></gliwice-switch>
   <div class="read" aria-hidden="true"><div class="clock">12:00</div><div class="place"><b>Gliwice</b><span>Daytime</span></div></div>
 </section>
-<footer>Drag to move through the hours. Tap to switch. <kbd>←</kbd> <kbd>→</kbd> step, <kbd>Space</kbd> toggles.</footer>
+<footer><p>Rynek &amp; Ratusz · Teatr Muzyczny · Beer Brothers, Górnych Wałów 30</p>Drag to move through the hours. Tap to switch. <kbd>←</kbd> <kbd>→</kbd> step, <kbd>Space</kbd> toggles.</footer>
 <script src="city-switch.js"></script>
 <script src="gliwice.js"></script>
 <script>
