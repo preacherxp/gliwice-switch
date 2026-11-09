@@ -4,7 +4,7 @@ Contemporary Gliwice in pixel art: the Rynek with its green-roofed Ratusz and Ne
 
 The landmarks form a compressed city panorama, rather than a literal street view.
 
-[Live demo](https://preacherxp.github.io/gliwice-switch/) · [Download the 7-second GIF](gliwice-day-night.gif) (960 × 540, 0.67 MiB)
+[Live demo](https://preacherxp.github.io/gliwice-switch/) · [Download the 7-second GIF](gliwice-day-night.gif) (full animated switch, 960 × 600, 3.94 MiB)
 
 Drag to move through the hours. Tap or press Space to toggle. Use the arrow keys to step through time.
 
