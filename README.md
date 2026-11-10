@@ -56,4 +56,4 @@ Checks rendering through day, dusk, night and dawn, Beer Brothers lighting, the 
 
 [RESEARCH.md](RESEARCH.md) lists the photographs opened for these additions and what could not be verified.
 
-The MP4 is a seven-second recording of the complete browser-rendered switch at 800 × 500 and 60 fps, including the moving glass lens.
+The MP4 is a seven-second recording of the complete browser-rendered switch at 1600 × 1000 and 60 fps, including the moving glass lens.
