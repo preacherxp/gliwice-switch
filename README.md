@@ -4,7 +4,7 @@ Contemporary Gliwice in pixel art: the Rynek with its green-roofed Ratusz and Ne
 
 The landmarks form a compressed city panorama, rather than a literal street view.
 
-[Live demo](https://preacherxp.github.io/gliwice-switch/) · [60 fps MP4](gliwice-day-night-60fps.mp4) · [Download the 7-second GIF](gliwice-day-night.gif) (full animated switch, 960 × 600, 3.94 MiB)
+[Live demo](https://preacherxp.github.io/gliwice-switch/) · [60 fps MP4](gliwice-day-night-60fps.mp4) · [Instagram 4:5 MP4](gliwice-instagram-4x5-60fps.mp4) · [Instagram cover](gliwice-instagram-cover.jpg) · [Download the 7-second GIF](gliwice-day-night.gif) (full animated switch, 960 × 600, 3.94 MiB)
 
 Drag to move through the hours. Tap or press Space to toggle. Use the arrow keys to step through time.
 
@@ -56,4 +56,4 @@ Checks rendering through day, dusk, night and dawn, Beer Brothers lighting, the 
 
 [RESEARCH.md](RESEARCH.md) lists the photographs opened for these additions and what could not be verified.
 
-The MP4 is a seven-second recording of the complete browser-rendered switch at 1600 × 1000 and 60 fps, including the moving glass lens.
+The MP4 is a seven-second recording of the complete browser-rendered switch at 1600 × 1000 and 60 fps, including the moving glass lens. The Instagram MP4 is the same loop at 1080 × 1350 (4:5), and its cover is a still from the night hold; both keep the whole switch inside the 3:4 profile-grid crop.
